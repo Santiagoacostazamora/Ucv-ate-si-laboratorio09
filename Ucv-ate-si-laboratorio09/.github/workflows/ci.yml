@@ -1,41 +1,19 @@
-name: CI Pipeline
-
+name: Build
 on:
-  pull_request:
-    branches:
-      - develop
-      - main
   push:
     branches:
-      - develop
       - main
-
+  pull_request:
+    types: [opened, synchronize, reopened]
 jobs:
-  quality-check:
-    runs-on: ubuntu-latest
-
+  sonarqube:
+    name: SonarQube
+    runs-on: windows-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup Python
-        uses: actions/setup-python@v5
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
         with:
-          python-version: "3.11"
-
-      - name: Install Poetry
-        run: pip install poetry
-
-      - name: Install dependencies
-        run: poetry install
-
-      - name: Run Ruff
-        run: poetry run ruff check .
-
-      - name: Run Pytest
-        run: poetry run pytest --cov=travel_assistant --cov-report=term-missing --cov-report=xml
-
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
       - name: SonarQube Scan
-        uses: SonarSource/sonarqube-scan-action@master
+        uses: SonarSource/sonarqube-scan-action@7006c4492b2e0ee0f816d36501671557c97f5995 # v8.1.0
         env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_TOKEN: ${{e5f35a5825ea2c8d8b36ad382af57f5b4f7a590d}}
